@@ -3,7 +3,7 @@ enum ActionType {
   DELETE_POSTS = "DELETE_POSTS"
 }
 
-interface Posts {
+interface Post {
   userId: number;
   id: number;
   title: string;
@@ -11,13 +11,13 @@ interface Posts {
 
 interface Action {
   type: ActionType;
-  payload: Posts[];
+  payload: Post[];
 }
 
 const posts = (state = [], action: Action) => {
   switch (action.type) {
     case "FETCH_POSTS":
-      return [...state, action.payload];
+      return [...state, ...action.payload];
     default:
       return state;
   }
