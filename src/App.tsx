@@ -1,9 +1,10 @@
-import React,{ useState } from 'react';
+import React,{ useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import { render } from '@testing-library/react';
 import { RootState } from './reducers';
 import { useSelector, useDispatch } from 'react-redux'
+import axios from 'axios';
 
 
 type Props = {
@@ -17,9 +18,23 @@ function App({value, onIncrement, onDecrement} : Props) {
   const counter = useSelector((state: RootState) => state.counter);
   const todos: string[]  = useSelector((state: RootState) => state.todos)
   const [todoValue, setTodoValue] = useState("")
+
+  useEffect(() => {
+    dispatch(fetchPosts())
+  }, [dispatch])
+
+  const fetchPosts = ():any => {
+    return async function fetchPostsThunk(dispatch:any, getState: any) {
+      const response = await axios.get("https://jsonplaceholder.typicode.com/posts")
+      dispatch({ type: "FETCH_POSTS", payload: response.data})
+    }
+  }
+  
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTodoValue(e.target.value);
   }
+
   const addTodo = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch({ type:  "ADD_TODO", text: todoValue})
